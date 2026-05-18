@@ -97,14 +97,14 @@ class Config:
         # URLs for various bot images
         self.DEFAULT_THUMB: str = getenv(
             "DEFAULT_THUMB",
-            "https://files.catbox.moe/al5k9d.png"  
+            "https://files.catbox.moe/6yi64z.png"  
         )
         self.PING_IMG: str = getenv(
-            "PING_IMG", "https://files.catbox.moe/al5k9d.png")    
+            "PING_IMG", "https://files.catbox.moe/6yi64z.png")    
         self.START_IMG: str = getenv(
-            "START_IMG", "https://files.catbox.moe/al5k9d.png")  
+            "START_IMG", "https://files.catbox.moe/6yi64z.png")  
         self.RADIO_IMG: str = getenv(
-            "RADIO_IMG", "https://files.catbox.moe/al5k9d.png")    
+            "RADIO_IMG", "https://files.catbox.moe/6yi64z.png")    
 
         # ============ MODERATION ============
         # List of usernames to exclude from admin mentions
