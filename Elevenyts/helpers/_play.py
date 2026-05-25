@@ -1,4 +1,4 @@
-# _play.py - Play Command Helper & Validator
+# _play.py - Play Command Helper & Validator (Fixed for Burmese Songs)
 
 import asyncio
 
