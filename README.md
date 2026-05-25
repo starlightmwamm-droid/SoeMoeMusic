@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://files.catbox.moe/nhg5ko.png" alt="˹ꜱʜʀɪ ᴍᴜꜱɪᴄ˼" width="400"/>
   
-  # 🎵 ˹ꜱʜʀɪ ᴍᴜꜱɪᴄ˼
+  # 🎵 ˹SoeMoe ᴍᴜꜱɪᴄ˼
 
   
   <p><b>A Powerful Telegram Music Player Bot</b></p>
