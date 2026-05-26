@@ -1,3 +1,4 @@
+import asyncio
 from pyrogram import Client
 
 from Elevenyts import config, logger
@@ -50,6 +51,14 @@ class Userbot(Client):
         except:
             return None
 
+    async def _auto_delete(self, message, delay: int = 5):
+        """Auto delete message after specified delay."""
+        await asyncio.sleep(delay)
+        try:
+            await message.delete()
+        except Exception:
+            pass
+
     async def boot_client(self, num: int, ub: Client):
         """
         Boot a client and perform initial setup.
@@ -76,7 +85,8 @@ class Userbot(Client):
             return  # Don't raise SystemExit, just skip this assistant
 
         try:
-            await client.send_message(config.LOGGER_ID, f"Assistant {num} Started")
+            msg = await client.send_message(config.LOGGER_ID, f"Assistant {num} Started")
+            asyncio.create_task(self._auto_delete(msg, 5))
         except Exception as e:
             logger.warning(
                 f"⚠️ Assistant {num} couldn't send message to logger: {e}")
