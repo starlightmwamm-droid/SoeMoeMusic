@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="[https://deposit.pictures/p/837f65cece2e4775b8f0432a4be6ceed]" alt="˹Elevenyts ᴍᴜꜱɪᴄ˼" width="400"/>
+  <img src="[https://github.com/starlightmwa-ship-it/Soe-Moe-Music/blob/main/ChatGPT%20Image%20May%2026%2C%202026%2C%2009_32_17%20PM.png]" alt="˹Elevenyts ᴍᴜꜱɪᴄ˼" width="400"/>
   
   # 🎵 ˹SoeMoe ᴍᴜꜱɪᴄ˼
 
