@@ -1,13 +1,13 @@
 <div align="center">
   <img src="https://files.catbox.moe/f177uk.jpg" alt="˹Elevenyts ᴍᴜꜱɪᴄ˼" width="400"/>
   
-  # 🎵 ˹ᴇʟᴇᴠᴇɴʏᴛꜱ ᴍᴜꜱɪᴄ˼
+  # 🎵 ˹SoeMoe ᴍᴜꜱɪᴄ˼
 
   
   <p><b>A Powerful Telegram Music Player Bot</b></p>
   
-  [![Telegram](https://img.shields.io/badge/Telegram-Channel-blue?style=for-the-badge&logo=telegram)](https://t.me/elevenytschats)
-  [![Telegram](https://img.shields.io/badge/Telegram-Support-blue?style=for-the-badge&logo=telegram)](https://t.me/elevenytsmusic)
+  [![Telegram](https://img.shields.io/badge/Telegram-Channel-blue?style=for-the-badge&logo=telegram)](https://t.me/bookbykosoemoe)
+  [![Telegram](https://img.shields.io/badge/Telegram-Support-blue?style=for-the-badge&logo=telegram)](https://t.me/bookbykosoemoe)
   [![Telegram](https://img.shields.io/badge/Telegram-String_Session-Darkblue?style=for-the-badge&logo=telegram)](https://t.me/genStringbot)
   [![Cloudflare](https://img.shields.io/badge/Pinger-Cloudflare-orange?style=for-the-badge&logo=cloudflare)](https://dash.cloudflare.com)
 
@@ -139,8 +139,8 @@ bash start
 
 ## 📞 Support & Contact
 
-- **Telegram Channel**: [@Elevenyts](https://t.me/elevenytschats)
-- **Support Group**: [@Elevenyts Music](https://t.me/elevenytsmusic) 
+- **Telegram Channel**: [@Ko_SoeMoe](https://t.me/bookbykosoemoe)
+- **Support Group**: [@Ko_SoeMoe](https://t.me/+Jm1ClLfrNRA3MzVl) 
 
 ---
 
