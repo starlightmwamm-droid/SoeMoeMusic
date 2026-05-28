@@ -9,12 +9,12 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# copy app
+# Copy app
 COPY . /app/
 WORKDIR /app/
 
-# install python packages
+# Install python packages
 RUN pip install -r requirements.txt
 
-# start command
-CMD bash start
+# Start command (FIXED)
+CMD ["python3", "-m", "Elevenyts", "start"]
