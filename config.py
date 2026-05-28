@@ -103,12 +103,6 @@ class Config:
             "https://github.com/starlightmwa-ship-it/Photo/blob/main/SoeMoe/SoeMoeMusic%20(4).png?raw=true",
             "https://github.com/starlightmwa-ship-it/Photo/blob/main/SoeMoe/SoeMoeMusic%20(5).png?raw=true",
         ]
-        
-        # Backward compatibility (အဟောင်းတွေအတွက် ပထမပုံကို ပုံသေထားပေး)
-        self.DEFAULT_THUMB: str = self.IMAGE_LIST[0]
-        self.PING_IMG: str = self.IMAGE_LIST[0]
-        self.START_IMG: str = self.IMAGE_LIST[0]  
-        self.RADIO_IMG: str = self.IMAGE_LIST[0]
 
         # ============ MODERATION ============
         # List of usernames to exclude from admin mentions
@@ -206,10 +200,12 @@ class Config:
                 f"Please check your .env file and ensure all required variables are set."
             )
 
+    # ============ IMAGE ROTATION METHODS ============
+    
     def get_random_image(self) -> str:
         """
         ကျပန်းပုံတစ်ပုံကို ပြန်ပေးမယ်
-        ဥပမာ - /ping command မှာ သုံးလို့ရအောင်
+        ဥပမာ - /ping, /help, /start (group) command တွေမှာ သုံးလို့ရအောင်
         """
         return random.choice(self.IMAGE_LIST)
 
@@ -228,6 +224,26 @@ class Config:
         chosen = random.choice(self.IMAGE_LIST)
         random.seed()  # seed ကို ပြန်ပုံမှန်ဖြစ်အောင်
         return chosen
+
+    @property
+    def DEFAULT_THUMB(self) -> str:
+        """Default thumbnail - သီချင်း/Video မှာ ကိုယ်ပိုင် thumbnail မပါရင်သုံးတဲ့ ကျပန်းပုံ"""
+        return random.choice(self.IMAGE_LIST)
+
+    @property
+    def PING_IMG(self) -> str:
+        """Ping command အတွက် ကျပန်းပုံ"""
+        return random.choice(self.IMAGE_LIST)
+
+    @property
+    def START_IMG(self) -> str:
+        """Start command အတွက် ကျပန်းပုံ"""
+        return random.choice(self.IMAGE_LIST)
+
+    @property
+    def RADIO_IMG(self) -> str:
+        """Radio command အတွက် ကျပန်းပုံ"""
+        return random.choice(self.IMAGE_LIST)
 
 
 # Global config instance
