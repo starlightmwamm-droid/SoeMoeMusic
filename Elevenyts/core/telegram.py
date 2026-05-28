@@ -1,4 +1,4 @@
-# telegram.py - Telegram Media Download Handler (Userbot Limit - 2GB/4GB)
+# telegram.py - Telegram Media Download Handler
 
 import asyncio
 import os
@@ -16,56 +16,34 @@ logger = logging.getLogger(__name__)
 class Telegram:
     def __init__(self):
         """Initialize the Telegram download handler."""
-        self.active = []  # List of currently downloading file IDs (prevent duplicates)
-        self.events = {}  # Dictionary of download events for cancellation
-        # Track last progress update time (for rate limiting)
+        self.active = []
+        self.events = {}
         self.last_edit = {}
-        self.active_tasks = {}  # Active download tasks for cancellation
-        self.sleep = 5  # Minimum seconds between progress updates
+        self.active_tasks = {}
+        self.sleep = 5
         
-        # Userbot file size limits:
-        # - Free Telegram account: 2GB (2048 MB)
-        # - Telegram Premium: 4GB (4096 MB)
-        # Set to 2GB by default (works for most users)
-        # Change to 4096 * 1024 * 1024 for Premium account
-        self.MAX_FILE_SIZE_BYTES = 2048 * 1024 * 1024  # 2GB (Userbot free limit)
-        # self.MAX_FILE_SIZE_BYTES = 4096 * 1024 * 1024  # 4GB (Userbot Premium)
-        
+        # ✅ 2GB limit for userbot (2048 MB)
+        self.MAX_FILE_SIZE_BYTES = 2048 * 1024 * 1024  # 2GB
         logger.info(f"📁 Telegram file size limit: {self.MAX_FILE_SIZE_BYTES // (1024 * 1024)} MB")
 
     def get_media(self, msg: types.Message) -> bool:
-        """Check if message contains downloadable media."""
         return any([msg.audio, msg.document, msg.voice, msg.video])
 
     async def download(self, msg: types.Message, sent: types.Message) -> Media | None:
-        """
-        Download media from a Telegram message with progress tracking.
-
-        Args:
-            msg: The message containing the media
-            sent: The status message to update with progress
-
-        Returns:
-            Media object if successful, None if failed or cancelled
-        """
         msg_id = sent.id
-        event = asyncio.Event()  # Event for cancellation
+        event = asyncio.Event()
         self.events[msg_id] = event
-        self.last_edit[msg_id] = 0  # Initialize last edit time
-        start_time = time.time()  # Track download start time
+        self.last_edit[msg_id] = 0
+        start_time = time.time()
 
-        # Extract media information from message
         media = msg.audio or msg.voice or msg.video or msg.document
-        # Detect if this is a video file
         is_video = bool(msg.video) or (msg.document and getattr(msg.document, "mime_type", "").startswith("video/"))
-        # Unique file identifier
         file_id = getattr(media, "file_unique_id", None)
         file_ext = getattr(media, "file_name", "").split(".")[-1] if getattr(media, "file_name", "") else "mp4"
-        file_size = getattr(media, "file_size", 0)  # File size in bytes
-        file_title = getattr(media, "title", "Telegram File") or "Telegram File"  # Media title
-        duration = getattr(media, "duration", 0)  # Duration in seconds
+        file_size = getattr(media, "file_size", 0)
+        file_title = getattr(media, "title", "Telegram File") or "Telegram File"
+        duration = getattr(media, "duration", 0)
 
-        # Validate duration limit (configured in config.py)
         if duration > config.DURATION_LIMIT:
             try:
                 await sent.edit_text(sent.lang["play_duration_limit"].format(config.DURATION_LIMIT // 60))
@@ -73,15 +51,14 @@ class Telegram:
                 pass
             return await sent.stop_propagation()
 
-        # ✅ FIX: Userbot limit - 2GB for free account, 4GB for Premium
+        # ✅ FIX: 2GB limit (2048 MB) - Userbot can handle this
         limit_mb = self.MAX_FILE_SIZE_BYTES // (1024 * 1024)
         if file_size > self.MAX_FILE_SIZE_BYTES:
             error_text = (
                 f"<blockquote>❌ <b>File too large!</b>\n\n"
                 f"📁 File size: <code>{utils.format_size(file_size)}</code>\n"
                 f"📊 Maximum allowed: <code>{limit_mb} MB ({limit_mb // 1024}GB)</code>\n\n"
-                f"💡 <i>Tip: Assistant (userbot) can handle up to {limit_mb // 1024}GB files.\n"
-                f"   Upgrade to Telegram Premium for 4GB files.</i></blockquote>"
+                f"💡 <i>Tip: Assistant (userbot) can handle up to {limit_mb // 1024}GB files.</i></blockquote>"
             )
             try:
                 await sent.edit_text(error_text)
@@ -110,14 +87,11 @@ class Telegram:
             )
 
             try:
-                await sent.edit_text(
-                    text, reply_markup=buttons.cancel_dl(sent.lang["cancel"])
-                )
+                await sent.edit_text(text, reply_markup=buttons.cancel_dl(sent.lang["cancel"]))
             except Exception:
                 pass
 
         try:
-            # Create downloads directory if not exists
             os.makedirs("downloads", exist_ok=True)
             
             file_path = f"downloads/{file_id}.{file_ext}"
@@ -130,28 +104,20 @@ class Telegram:
                     return await sent.stop_propagation()
 
                 self.active.append(file_id)
-                task = asyncio.create_task(
-                    msg.download(file_name=file_path, progress=progress)
-                )
+                task = asyncio.create_task(msg.download(file_name=file_path, progress=progress))
                 self.active_tasks[msg_id] = task
                 await task
                 self.active.remove(file_id)
                 self.active_tasks.pop(msg_id, None)
                 
-                # Verify file was created
                 if not os.path.exists(file_path):
                     raise FileNotFoundError(f"Download failed: {file_path}")
                     
                 try:
-                    await sent.edit_text(
-                        sent.lang["dl_complete"].format(
-                            round(time.time() - start_time, 2)
-                        )
-                    )
+                    await sent.edit_text(sent.lang["dl_complete"].format(round(time.time() - start_time, 2)))
                 except Exception:
                     pass
 
-            # Format duration with hours support
             if duration >= 3600:
                 duration_str = time.strftime("%H:%M:%S", time.gmtime(duration))
             else:
@@ -182,7 +148,6 @@ class Telegram:
             self.active = [f for f in self.active if f != file_id]
 
     async def cancel(self, query: types.CallbackQuery):
-        """Cancel an ongoing download."""
         event = self.events.get(query.message.id)
         task = self.active_tasks.pop(query.message.id, None)
         if event:
@@ -191,8 +156,6 @@ class Telegram:
         if task and not task.done():
             task.cancel()
         if event or task:
-            await query.edit_message_text(
-                query.lang["dl_cancel"].format(query.from_user.mention)
-            )
+            await query.edit_message_text(query.lang["dl_cancel"].format(query.from_user.mention))
         else:
             await query.answer(query.lang["dl_not_found"], show_alert=True)
