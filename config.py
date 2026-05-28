@@ -105,10 +105,7 @@ class Config:
         ]
         
         # Backward compatibility (အဟောင်းတွေအတွက် ပထမပုံကို ပုံသေထားပေး)
-        self.DEFAULT_THUMB: str = getenv(
-            "DEFAULT_THUMB",
-            "https://files.catbox.moe/nhg5ko.png"  
-        )
+        self.DEFAULT_THUMB: str = self.IMAGE_LIST[0]
         self.PING_IMG: str = self.IMAGE_LIST[0]
         self.START_IMG: str = self.IMAGE_LIST[0]  
         self.RADIO_IMG: str = self.IMAGE_LIST[0]
