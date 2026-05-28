@@ -1,6 +1,7 @@
 from os import getenv
 from typing import List, Optional
 from dotenv import load_dotenv
+import random
 
 # Load environment variables from .env file (create one from sample.env)
 load_dotenv()
@@ -93,18 +94,24 @@ class Config:
         # Parse space-separated cookie URLs for age-restricted content
         self.COOKIES_URL: List[str] = self._parse_cookies()
 
-        # ============ IMAGE URLS ============
-        # URLs for various bot images
+        # ============ IMAGE URLS (ပုံ ၅ ပုံ လည်ပတ်သုံးရန်) ============
+        # ပုံ ၅ ပုံရဲ့ raw URL စာရင်း
+        self.IMAGE_LIST: List[str] = [
+            "https://github.com/starlightmwa-ship-it/Photo/blob/main/SoeMoe/SoeMoeMusic%20(1).png?raw=true",
+            "https://github.com/starlightmwa-ship-it/Photo/blob/main/SoeMoe/SoeMoeMusic%20(2).png?raw=true",
+            "https://github.com/starlightmwa-ship-it/Photo/blob/main/SoeMoe/SoeMoeMusic%20(3).png?raw=true",
+            "https://github.com/starlightmwa-ship-it/Photo/blob/main/SoeMoe/SoeMoeMusic%20(4).png?raw=true",
+            "https://github.com/starlightmwa-ship-it/Photo/blob/main/SoeMoe/SoeMoeMusic%20(5).png?raw=true",
+        ]
+        
+        # Backward compatibility (အဟောင်းတွေအတွက် ပထမပုံကို ပုံသေထားပေး)
         self.DEFAULT_THUMB: str = getenv(
             "DEFAULT_THUMB",
             "https://files.catbox.moe/nhg5ko.png"  
         )
-        self.PING_IMG: str = getenv(
-            "PING_IMG", "https://raw.githubusercontent.com/starlightmwa-ship-it/MusicBotPhoto/main/SoeMoeMusic.png")    
-        self.START_IMG: str = getenv(
-            "START_IMG", "https://raw.githubusercontent.com/starlightmwa-ship-it/MusicBotPhoto/main/SoeMoeMusic.png")  
-        self.RADIO_IMG: str = getenv(
-            "RADIO_IMG", "https://raw.githubusercontent.com/starlightmwa-ship-it/MusicBotPhoto/main/SoeMoeMusic.png")    
+        self.PING_IMG: str = self.IMAGE_LIST[0]
+        self.START_IMG: str = self.IMAGE_LIST[0]  
+        self.RADIO_IMG: str = self.IMAGE_LIST[0]
 
         # ============ MODERATION ============
         # List of usernames to exclude from admin mentions
@@ -201,6 +208,29 @@ class Config:
                 f"❌ Missing required environment variables: {', '.join(missing)}\n"
                 f"Please check your .env file and ensure all required variables are set."
             )
+
+    def get_random_image(self) -> str:
+        """
+        ကျပန်းပုံတစ်ပုံကို ပြန်ပေးမယ်
+        ဥပမာ - /ping command မှာ သုံးလို့ရအောင်
+        """
+        return random.choice(self.IMAGE_LIST)
+
+    def get_chat_image(self, chat_id: int, style: str = "ping") -> str:
+        """
+        Chat ID ပေါ်မူတည်ပြီး တည်ငြိမ်တဲ့ပုံကို ပြန်ပေးမယ်
+        (တူညီတဲ့ chat မှာ တူညီတဲ့ပုံပဲ ပြသချင်ရင် သုံးပါ)
+        
+        Args:
+            chat_id: Telegram chat ID
+            style: ပုံအမျိုးအစား (ping, start, radio) - မတူအောင် ခွဲချင်ရင် သုံးပါ
+        """
+        # chat_id နဲ့ style ပေါင်းပြီး seed လုပ်မယ် (တူညီတဲ့ chat မှာ တူညီတဲ့ပုံရဖို့)
+        seed = hash(f"{chat_id}_{style}")
+        random.seed(seed)
+        chosen = random.choice(self.IMAGE_LIST)
+        random.seed()  # seed ကို ပြန်ပုံမှန်ဖြစ်အောင်
+        return chosen
 
 
 # Global config instance
