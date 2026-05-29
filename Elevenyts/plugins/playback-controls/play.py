@@ -86,7 +86,7 @@ def playlist_to_queue(chat_id: int, tracks: list) -> str:
 ENABLE_CLOUD_STORAGE = getattr(config, 'ENABLE_CLOUD_STORAGE', True)
 
 
-async def auto_delete_message(msg, delay: int = 30):
+async def auto_delete_message(msg, delay: int = 20):
     """Auto delete a message after delay seconds"""
     await asyncio.sleep(delay)
     try:
@@ -296,8 +296,8 @@ async def play_hndlr(
                 ),
             )
             
-            # ✅ Auto-delete queue message after 30 seconds
-            asyncio.create_task(auto_delete_message(sent, 30))
+            # ✅ Auto-delete queue message after 20 seconds
+            asyncio.create_task(auto_delete_message(sent, 20))
             
             if tracks:
                 added = playlist_to_queue(chat_id, tracks)
