@@ -1,13 +1,10 @@
 # _play.py - Play Command Helper & Validator
 
 import asyncio
-import logging
 
 from pyrogram import enums, errors, types
 
 from Elevenyts import app, config, db, queue, yt
-
-logger = logging.getLogger(__name__)
 
 
 def checkUB(play):
@@ -67,21 +64,21 @@ def checkUB(play):
                 await safe_reply(m.lang["play_admin"])
                 return
 
-        # ========== ✅ VOICE CHAT CHECK (FANCY FONT) ==========
+        # ========== ✅ VOICE CHAT CHECK ==========
         try:
-            call = await app.get_call(m.chat.id)
-            if not call:
+            group_call = await app.get_group_call(m.chat.id)
+            if not group_call or not group_call.is_active:
                 await safe_reply(
-                    "<b>❌ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ꜰᴏᴜɴᴅ!</b>\n\n"
+                    "<b>❌ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ɪꜱ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ!</b>\n\n"
                     "ᴘʟᴇᴀꜱᴇ ꜱᴛᴀʀᴛ ᴀ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ꜰɪʀꜱᴛ ʙᴇꜰᴏʀᴇ ᴘʟᴀʏɪɴɢ ᴍᴜꜱɪᴄ.\n\n"
                     "👉 <i>ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴛᴀʀᴛ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ꜰʀᴏᴍ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ.</i>"
                 )
                 return
         except Exception:
             await safe_reply(
-                "<b>❌ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ɪꜱ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ!</b>\n\n"
+                "<b>❌ ɴᴏ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ꜰᴏᴜɴᴅ!</b>\n\n"
                 "ᴘʟᴇᴀꜱᴇ ꜱᴛᴀʀᴛ ᴀ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ꜰɪʀꜱᴛ ʙᴇꜰᴏʀᴇ ᴘʟᴀʏɪɴɢ ᴍᴜꜱɪᴄ.\n\n"
-                "👉 <i>ᴄʟɪᴄᴋ ᴛʜᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ʙᴜᴛᴛᴏɴ ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ ᴛᴏ ꜱᴛᴀʀᴛ.</i>"
+                "👉 <i>ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴛᴀʀᴛ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ ꜰʀᴏᴍ ɢʀᴏᴜᴘ ꜱᴇᴛᴛɪɴɢꜱ.</i>"
             )
             return
         # ========== END VOICE CHAT CHECK ==========
