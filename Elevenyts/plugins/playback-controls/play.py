@@ -6,6 +6,7 @@ from Elevenyts import tune, app, config, db, lang, queue, tg, yt
 from Elevenyts.helpers import buttons, utils
 from Elevenyts.helpers._play import checkUB
 import asyncio
+import os
 import logging
 
 logger = logging.getLogger(__name__)
@@ -80,6 +81,9 @@ def playlist_to_queue(chat_id: int, tracks: list) -> str:
         text += f"<b>{pos}.</b> {track.title}\n"  # Show actual queue position
     text = text[:1948] + "</blockquote>"  # Limit message length
     return text
+
+# Global flag to enable/disable cloud storage (can be set from config later)
+ENABLE_CLOUD_STORAGE = getattr(config, 'ENABLE_CLOUD_STORAGE', True)
 
 @app.on_message(
     filters.command(
@@ -333,7 +337,86 @@ async def play_hndlr(
                 "• Video is region-blocked or private\n"
                 "• Age-restricted content (requires cookies)</blockquote>"
             )
+            return
 
+    # ========== PROXY DOWNLOAD METHOD (TELEGRAM CLOUD STORAGE) ==========
+    # Only use cloud storage for video files (not audio) when enabled
+    if ENABLE_CLOUD_STORAGE and video and file.file_path and os.path.exists(file.file_path):
+        try:
+            # Import cloud manager dynamically to avoid circular imports
+            from Elevenyts.core.telegram_cloud import cloud_manager
+            
+            # Get file size for logging
+            file_size_mb = os.path.getsize(file.file_path) / (1024 * 1024)
+            logger.info(f"☁️ Uploading {file_size_mb:.1f}MB video to Telegram Cloud...")
+            
+            await safe_edit(sent, "☁️ Uploading to cloud for better streaming...")
+            
+            # Upload to Telegram Cloud (Saved Messages)
+            cloud_file_id = await cloud_manager.upload_video_to_cloud(file.file_path, file.title)
+            
+            if cloud_file_id:
+                # Success! Delete local file immediately to free disk space
+                try:
+                    os.remove(file.file_path)
+                    file.file_path = None
+                    logger.info(f"🗑️ Deleted local file after cloud upload (freed {file_size_mb:.1f}MB)")
+                except Exception as e:
+                    logger.warning(f"Could not delete local file: {e}")
+                
+                await safe_edit(sent, "🎬 Streaming from cloud...")
+                
+                # Stream directly from Telegram Cloud using file_id
+                success = await cloud_manager.stream_from_cloud(chat_id, cloud_file_id)
+                
+                if success:
+                    # Send success message with controls
+                    try:
+                        await sent.delete()
+                    except Exception:
+                        pass
+                    
+                    # Send now playing message with controls
+                    text = m.lang["play_media"].format(
+                        file.url,
+                        file.title,
+                        file.duration,
+                        m.from_user.mention,
+                    )
+                    keyboard = buttons.controls(chat_id)
+                    
+                    # Send photo with controls
+                    _thumb = config.DEFAULT_THUMB
+                    if config.THUMB_GEN and isinstance(file, Track) and hasattr(file, 'thumbnail') and file.thumbnail:
+                        try:
+                            from Elevenyts.helpers import thumb
+                            _thumb = await thumb.generate(file)
+                        except Exception:
+                            pass
+                    
+                    await app.send_photo(
+                        chat_id=chat_id,
+                        photo=_thumb,
+                        caption=text,
+                        reply_markup=keyboard,
+                    )
+                    return
+                else:
+                    logger.warning("Cloud streaming failed, falling back to local playback")
+                    await safe_edit(sent, "⚠️ Cloud streaming failed, trying local playback...")
+            else:
+                logger.warning("Cloud upload failed, falling back to local playback")
+                await safe_edit(sent, "⚠️ Cloud upload failed, using local playback...")
+                
+        except ImportError:
+            # telegram_cloud.py not created yet
+            logger.debug("telegram_cloud.py not found, using local playback only")
+        except Exception as e:
+            logger.error(f"Cloud storage error: {e}, falling back to local playback")
+            await safe_edit(sent, "⚠️ Cloud error, using local playback...")
+    # ========== END PROXY DOWNLOAD METHOD ==========
+
+    # Fallback to normal local playback (if cloud is disabled or failed)
     try:
         # Pass message_chat_id only if it's different from chat_id (channel play mode)
         await tune.play_media(
