@@ -3,7 +3,6 @@ from pyrogram import types
 from Elevenyts import app, config, lang
 
 
-
 class Inline:
     def __init__(self):
         self.ikm = types.InlineKeyboardMarkup
@@ -32,8 +31,6 @@ class Inline:
             )
 
         if not remove:
-            # Seek buttons row
-            
             # Main control buttons row
             keyboard.append(
                 [
@@ -53,7 +50,7 @@ class Inline:
             keyboard.append(
                 [
                     self.ikb(
-                        text="🗑️ᴅᴇʟᴇᴛᴇ", callback_data=f"controls close {chat_id}"),
+                        text="🗑️ ᴅᴇʟᴇᴛᴇ", callback_data=f"controls close {chat_id}"),
                 ]
             )
         return self.ikm(keyboard)
@@ -65,7 +62,7 @@ class Inline:
         if back:
             rows = [
                 [
-                    self.ikb(text="ʙᴀᴄᴋ", callback_data="help_main"),
+                    self.ikb(text=_lang.get("back", "◀️ ʙᴀᴄᴋ"), callback_data="help_main"),
                 ]
             ]
         else:
@@ -102,12 +99,11 @@ class Inline:
             ]
         return self.ikm(rows)
 
-
     def ping_markup(self, text: str) -> types.InlineKeyboardMarkup:
         return self.ikm([
             [
-                self.ikb(text=lang["📢support"], url=config.SUPPORT_CHAT),
-                self.ikb(text=lang["👥channel"], url=config.SUPPORT_CHANNEL),
+                self.ikb(text="📢 Channel", url=config.SUPPORT_CHANNEL),
+                self.ikb(text="💬 Support", url=config.SUPPORT_CHAT),
             ],
             [
                 self.ikb(text="➕ Add Me to Your Group", url=f"https://t.me/{app.username}?startgroup=true"),
@@ -131,7 +127,7 @@ class Inline:
                 ],
                 [
                     self.ikb(
-                        text="🗑️ᴅᴇʟᴇᴛᴇ", callback_data=f"controls close {chat_id}"),
+                        text="🗑️ ᴅᴇʟᴇᴛᴇ", callback_data=f"controls close {chat_id}"),
                 ]
             ]
         )
@@ -152,7 +148,7 @@ class Inline:
             [
                 [
                     self.ikb(
-                        text=lang["play_mode"] + " ➜",
+                        text=lang.get("play_mode", "ᴘʟᴀʏ ᴍᴏᴅᴇ") + " ➜",
                         callback_data=f"controls status {chat_id}",
                     ),
                     self.ikb(text=admin_only, callback_data="playmode"),
@@ -166,14 +162,14 @@ class Inline:
         rows = [
             [
                 self.ikb(
-                    text=lang["add_me"],
+                    text=lang.get("add_me", "➕ Add Me to Your Group"),
                     url=f"https://t.me/{app.username}?startgroup=true",
                 )
             ],
-            [self.ikb(text=lang["help"], callback_data="help")],
+            [self.ikb(text=lang.get("help", "❓ Help"), callback_data="help")],
             [
-                self.ikb(text=lang["📢support"], url=config.SUPPORT_CHAT),
-                self.ikb(text=lang["👥channel"], url=config.SUPPORT_CHANNEL),
+                self.ikb(text=lang.get("support", "💬 Support"), url=config.SUPPORT_CHAT),
+                self.ikb(text=lang.get("channel", "📢 Channel"), url=config.SUPPORT_CHANNEL),
             ],
         ]
         return self.ikm(rows)
@@ -182,8 +178,8 @@ class Inline:
         return self.ikm(
             [
                 [
-                    self.ikb(text="ᴄᴏᴘʏ ʟɪɴᴋ", copy_text=link),
-                    self.ikb(text="ᴏᴘᴇɴ ɪɴ ʏᴏᴜᴛᴜʙᴇ", url=link),
+                    self.ikb(text="📋 ᴄᴏᴘʏ ʟɪɴᴋ", copy_text=link),
+                    self.ikb(text="📺 ᴏᴘᴇɴ ɪɴ ʏᴏᴜᴛᴜʙᴇ", url=link),
                 ],
             ]
         )
