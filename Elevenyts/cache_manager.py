@@ -33,6 +33,10 @@ class CacheManager:
             if free_mb < self.min_free_mb:
                 deleted_count = 0
                 for filename in os.listdir(self.cache_dir):
+                    # ✅ IMPORTANT FIX: Skip downloads folder to prevent video deletion
+                    if filename == "downloads":
+                        continue
+                    
                     filepath = os.path.join(self.cache_dir, filename)
                     try:
                         if os.path.isfile(filepath):
