@@ -107,7 +107,7 @@ class Inline:
         return self.ikm([
             [
                 self.ikb(text="📢 Channel", url=config.SUPPORT_CHANNEL),
-                self.ikb(text="🆘 Support", url=config.SUPPORT_CHAT),
+                self.ikb(text="👥 Support", url=config.SUPPORT_CHAT),
             ],
             [
                 self.ikb(text="➕ Add Me to Your Group", url=f"https://t.me/{app.username}?startgroup=true"),
@@ -172,8 +172,8 @@ class Inline:
             ],
             [self.ikb(text=lang["help"], callback_data="help")],
             [
-                self.ikb(text=lang["support"], url=config.SUPPORT_CHAT),
-                self.ikb(text=lang["channel"], url=config.SUPPORT_CHANNEL),
+                self.ikb(text=lang["📢support"], url=config.SUPPORT_CHAT),
+                self.ikb(text=lang["👥channel"], url=config.SUPPORT_CHANNEL),
             ],
         ]
         return self.ikm(rows)
