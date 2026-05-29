@@ -108,6 +108,13 @@ class Config:
         # List of usernames to exclude from admin mentions
         self.EXCLUDED_USERNAMES: List[str] = getenv("EXCLUDED_USERNAMES", "").split()
 
+        # ============ PROXY DOWNLOAD METHOD (TELEGRAM CLOUD) ============
+        # Enable/disable Telegram Cloud storage for video files
+        # When enabled, videos are uploaded to Telegram Cloud and streamed from there
+        # This saves Render disk space (free tier only has 500MB)
+        # Set to "False" in .env if you want to disable cloud storage
+        self.ENABLE_CLOUD_STORAGE: bool = self._str_to_bool(getenv("ENABLE_CLOUD_STORAGE", "True"))
+
     def _parse_video_height(self) -> int:
         """Parse and validate video height configuration."""
         default_height = 1080
