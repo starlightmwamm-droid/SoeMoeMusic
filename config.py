@@ -112,7 +112,7 @@ class Config:
 
     def _parse_video_height(self) -> int:
         """Parse and validate video height configuration."""
-        default_height = 1080
+        default_height = 720
         raw_value = getenv("VIDEO_MAX_HEIGHT", str(default_height))
         try:
             height = int(raw_value)
