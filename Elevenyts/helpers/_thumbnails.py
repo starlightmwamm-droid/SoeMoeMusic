@@ -133,7 +133,7 @@ class Thumbnail:
             sym2_y = y2
             for ox, oy, sc in [(-1,-1,(0,0,0,200)), (1,1,(0,0,0,200))]:
                 draw.text((sym2_x+ox, sym2_y+oy), symbol2, font=self.symbol_font, fill=sc)
-            draw.text((sym2_x, sym2_y), symbol2, font=self.symbol_font, fill=(128, 128, 128))  # မီးခိုးရောင်
+            draw.text((sym2_x, sym2_y), symbol2, font=self.symbol_font, fill=(80, 80, 80))  # မီးခိုးရောင်
 
             # ========== Gradient Overlay ==========
             gradient = Image.new("L", (1, 300))
