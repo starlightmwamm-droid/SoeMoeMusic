@@ -263,8 +263,26 @@ class MongoDB:
         return self.chats
 
     async def get_chats_count(self) -> int:
-        """Get total number of chats the bot has served."""
-        return len(await self.get_chats())
+        """Get total number of ACTIVE chats (bot is still a member)."""
+        all_chats = await self.get_chats()
+        active_count = 0
+        
+        for chat_id in all_chats:
+            if await self._is_bot_in_chat(chat_id):
+                active_count += 1
+            else:
+                await self.rm_chat(chat_id)
+        
+        return active_count
+
+    async def _is_bot_in_chat(self, chat_id: int) -> bool:
+        """Check if bot is still a member of the chat."""
+        from Elevenyts import app
+        try:
+            await app.get_chat_member(chat_id, app.id)
+            return True
+        except Exception:
+            return False
 
     # LANGUAGE METHODS
     async def set_lang(self, chat_id: int, lang_code: str):
